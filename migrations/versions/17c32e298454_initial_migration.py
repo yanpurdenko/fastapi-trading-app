@@ -1,8 +1,8 @@
 """Initial migration
 
-Revision ID: 3cef87ee66ec
+Revision ID: 17c32e298454
 Revises: 
-Create Date: 2023-06-03 18:50:04.357733
+Create Date: 2023-06-03 20:35:17.508157
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = "3cef87ee66ec"
+revision = "17c32e298454"
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -21,7 +21,7 @@ def upgrade() -> None:
     op.create_table(
         "role",
         sa.Column("id", sa.Integer(), nullable=False),
-        sa.Column("name", sa.String(), nullable=False),
+        sa.Column("name", sa.String(length=255), nullable=False),
         sa.Column("permissions", sa.JSON(), nullable=True),
         sa.PrimaryKeyConstraint("id"),
     )
@@ -30,9 +30,9 @@ def upgrade() -> None:
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("email", sa.String(length=320), nullable=False),
         sa.Column("username", sa.String(length=255), nullable=False),
-        sa.Column("hashed_password", sa.String(), nullable=False),
         sa.Column("registered_at", sa.TIMESTAMP(), nullable=True),
         sa.Column("role_id", sa.Integer(), nullable=True),
+        sa.Column("hashed_password", sa.String(length=1024), nullable=False),
         sa.Column("is_active", sa.Boolean(), nullable=False),
         sa.Column("is_superuser", sa.Boolean(), nullable=False),
         sa.Column("is_verified", sa.Boolean(), nullable=False),
@@ -41,8 +41,6 @@ def upgrade() -> None:
             ["role.id"],
         ),
         sa.PrimaryKeyConstraint("id"),
-        sa.UniqueConstraint("email"),
-        sa.UniqueConstraint("username"),
     )
     # ### end Alembic commands ###
 
